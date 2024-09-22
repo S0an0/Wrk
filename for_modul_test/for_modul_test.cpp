@@ -16,7 +16,7 @@ public:
     string line_create_file;
     ifstream* read_file;
     ofstream *create_file;
-    string temp;
+    string temp[10000];
     Create_for(ifstream *read_f, ofstream *create_f) 
     {
         read_file=read_f;
@@ -37,17 +37,27 @@ public:
     }
     void create_forchik()
     {
+        int i=0;
         if (is_openn())
         {
             while (read_file)
             {
-                *read_file >> temp;
-                if (temp == "if")
+                *read_file >> temp[i];
+                i++;
+            }
+            i = 0;
+            for (string poisk : temp)
+            {
+                /*if (temp[i] == "void" || temp[i] == "int" || temp[i] == "uint8_t" || temp[i] == "unint16_t" || temp[i] == "uint32_t")
+                {
+                    if(temp[i+2]=="()")
+                }*/
+                /*if (temp[i] == "if")
                 {
                     cout << "if" << endl;
                     *create_file << n1 << char(number_cicle) << n2 << char(number_cicle) << n3 << char(number_cicle) << n4;
-                }
-                if (temp == "//exit")
+                }*/
+                if (temp[i] == "//exit")
                     break;
             }
             cout << "tip vse normas" << endl;
@@ -64,7 +74,17 @@ int main()
     ifstream n1("123.txt");
     ofstream n2("create_for.txt");
     Create_for h(&n1, &n2);
-    h.create_forchik();
+    //h.create_forchik();
+    cout << endl;
+    string f;
+    while (n1)
+    {
+        n1 >> f;
+        cout << f;
+
+    }
+    //for (auto d : f)
+       // cout << f;
     //string symbol;
     ////char symbol[100];
     //int f = 65;  //do 90

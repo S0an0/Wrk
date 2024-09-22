@@ -1,3 +1,5 @@
+void test () 
+{
 if (CanIn_Another_CHNL->frame8_2_IPO_command_list.bitset.command_MEANDR_MOTOR_M1_OFF)
     Ext_SARD_Set.type_used_barcorr_mvv1 = 2;
 else
@@ -5,3 +7,4 @@ else
         Ext_SARD_Set.type_used_barcorr_mvv1 = 3;
     else
         Ext_SARD_Set.type_used_barcorr_mvv1 = 0; //exit
+}
