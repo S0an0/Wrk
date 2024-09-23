@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 void error_clear()
 {//функция сброса отказных ситуаций(исп. однократно при смене режимов)
@@ -266,3 +267,15 @@ void GetExtInfo()
         break;
     }
 }
+=======
+void test () 
+{
+if (CanIn_Another_CHNL->frame8_2_IPO_command_list.bitset.command_MEANDR_MOTOR_M1_OFF)
+    Ext_SARD_Set.type_used_barcorr_mvv1 = 2;
+else
+    if (CanIn_Another_CHNL->frame8_2_IPO_command_list.bitset.command_MEANDR_PMIN_OFF)
+        Ext_SARD_Set.type_used_barcorr_mvv1 = 3;
+    else
+        Ext_SARD_Set.type_used_barcorr_mvv1 = 0; //exit
+}
+>>>>>>> 0948b56a188758fb90c9da5d073a643471cedef8

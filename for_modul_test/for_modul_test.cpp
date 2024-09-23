@@ -16,10 +16,20 @@ public:
     string line_create_file;
     ifstream* read_file;
     ofstream *create_file;
+<<<<<<< HEAD
     string temp;
     Create_for(ifstream* read_f, ofstream* create_f) : read_file(read_f), create_file(create_f) {};
     
     /*bool is_openn()
+=======
+    string temp[10000];
+    Create_for(ifstream *read_f, ofstream *create_f) 
+    {
+        read_file=read_f;
+        create_file = create_f;
+    };
+    bool is_openn()
+>>>>>>> 0948b56a188758fb90c9da5d073a643471cedef8
     {
         if (read_file->is_open() && create_file->is_open())
         {
@@ -34,6 +44,7 @@ public:
     };*/
     void create_forchik()
     {
+<<<<<<< HEAD
         if (read_file->is_open() && create_file->is_open())
         {
             while (read_file)
@@ -74,11 +85,33 @@ public:
 
                 }
                /* if (temp == "if")
+=======
+        int i=0;
+        if (is_openn())
+        {
+            while (read_file)
+            {
+                *read_file >> temp[i];
+                i++;
+            }
+            i = 0;
+            for (string poisk : temp)
+            {
+                /*if (temp[i] == "void" || temp[i] == "int" || temp[i] == "uint8_t" || temp[i] == "unint16_t" || temp[i] == "uint32_t")
+                {
+                    if(temp[i+2]=="()")
+                }*/
+                /*if (temp[i] == "if")
+>>>>>>> 0948b56a188758fb90c9da5d073a643471cedef8
                 {
                     cout << "if" << endl;
                     *create_file << n1 << char(number_cicle) << n2 << char(number_cicle) << n3 << char(number_cicle) << n4;
                 }*/
+<<<<<<< HEAD
                 if (temp == "//exit")
+=======
+                if (temp[i] == "//exit")
+>>>>>>> 0948b56a188758fb90c9da5d073a643471cedef8
                     break;
             }
             cout << "tip vse normas" << endl;
@@ -95,8 +128,22 @@ int main()
     ifstream n1("123.txt");
     ofstream n2("create_for.txt");
     Create_for h(&n1, &n2);
+<<<<<<< HEAD
     h.create_forchik();
      
+=======
+    //h.create_forchik();
+    cout << endl;
+    string f;
+    while (n1)
+    {
+        n1 >> f;
+        cout << f;
+
+    }
+    //for (auto d : f)
+       // cout << f;
+>>>>>>> 0948b56a188758fb90c9da5d073a643471cedef8
     //string symbol;
     ////char symbol[100];
     //int f = 65;  //do 90
