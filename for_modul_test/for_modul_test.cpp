@@ -1,4 +1,5 @@
 ﻿
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,22 +8,18 @@ using namespace std;
 class Create_for
 {
 public:
-    string n1= "for (int ";
-    string n2 = "= 0; ";
-    string n3 = " < 2; ";
-    string n4="++)";
+    string test[2] = {"[TestMethod]\n\t","TestMethod_"};
+    string standart_ofstr = "ofstream out;\nint TestTask = 0;\nout.open(\"TestMethod_ACS_";
+    string name_file;
     int number_cicle=65;
     string line_read_file;
     string line_create_file;
     ifstream* read_file;
     ofstream *create_file;
     string temp;
-    Create_for(ifstream *read_f, ofstream *create_f) 
-    {
-        read_file=read_f;
-        create_file = create_f;
-    };
-    bool is_openn()
+    Create_for(ifstream* read_f, ofstream* create_f) : read_file(read_f), create_file(create_f) {};
+    
+    /*bool is_openn()
     {
         if (read_file->is_open() && create_file->is_open())
         {
@@ -34,19 +31,53 @@ public:
             cout << "file is close" << endl;
             return false;
         }
-    }
+    };*/
     void create_forchik()
     {
-        if (is_openn())
+        if (read_file->is_open() && create_file->is_open())
         {
             while (read_file)
             {
                 *read_file >> temp;
-                if (temp == "if")
+                if (temp == "void")
+                {
+                    *create_file << test[0] << temp << " ";
+                    *read_file >> temp;
+                    name_file = temp;
+                    *create_file << test[1] << temp << " ";
+                    while (temp != "{")
+                    {
+                        *read_file >> temp;
+                        if (temp == "{")
+                            *create_file << "\n" << temp;
+                        else
+                            *create_file << temp;
+                    }
+                    *create_file << "\n";
+                    *create_file << standart_ofstr << name_file << ".txt\");\n" << "out.close(); \n"<<"}\n\n";
+                    //bool prov=false;
+                    //for (auto g : temp)
+                    //{
+                    //    if (g == ')')
+                    //    {
+                    //        *create_file << test[0] << temp << "();\n{\n};";
+                    //        break;
+                    //    }
+                    //}
+                    //
+                    //
+                    //
+                    //*read_file >> temp;
+                    //*create_file << test << temp << "();\n{\n};";
+                    //*read_file >> temp;
+                    //*read_file >> temp;
+
+                }
+               /* if (temp == "if")
                 {
                     cout << "if" << endl;
                     *create_file << n1 << char(number_cicle) << n2 << char(number_cicle) << n3 << char(number_cicle) << n4;
-                }
+                }*/
                 if (temp == "//exit")
                     break;
             }
@@ -65,6 +96,7 @@ int main()
     ofstream n2("create_for.txt");
     Create_for h(&n1, &n2);
     h.create_forchik();
+     
     //string symbol;
     ////char symbol[100];
     //int f = 65;  //do 90

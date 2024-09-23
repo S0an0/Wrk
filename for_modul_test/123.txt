@@ -1,7 +1,268 @@
-if (CanIn_Another_CHNL->frame8_2_IPO_command_list.bitset.command_MEANDR_MOTOR_M1_OFF)
-    Ext_SARD_Set.type_used_barcorr_mvv1 = 2;
-else
-    if (CanIn_Another_CHNL->frame8_2_IPO_command_list.bitset.command_MEANDR_PMIN_OFF)
-        Ext_SARD_Set.type_used_barcorr_mvv1 = 3;
+
+void error_clear()
+{//функция сброса отказных ситуаций(исп. однократно при смене режимов)
+    Error_s.big_absP = 0;
+    Error_s.no_germetic = 0;
+    Error_s.Perenadduv = 0;
+    Error_s.Vakuum = 0;
+    Error_s.Perepad = 0;
+    Error_s.smallV = 0;
+    Error_s.small_absP = 0;
+    SARD_Set.ERROR_SARD = 0;
+    UART1Error = 0;
+    SARD_Set.csKZ1M1 = 0;
+    SARD_Set.csKZ1M2 = 0;
+    UART2Error = 0;
+    SARD_Set.BDD4_gl_ERROR = 0;
+    SARD_Set.BDD4_an_error = 0;
+    SARD_Set.BDD4_rez_error = 0;
+    SARD_Set.BDD4_an_rez_error = 0;
+    SARD_Set.ERROR_CHNL_STAT = 0;
+    //      GroundChechON=0;
+    //      GroundCheckImpossible=0;
+
+    prev_fly_control = 0;
+    allground_control = 0;
+    //      AllGroundChechON=0;
+    //      AllGroundCheckImpossible=0;
+    SARD_Set.ERROR_pos1 = 0;
+    SARD_Set.ERROR_pos2 = 0;
+    Ext_SARD_Set.READ_MEMORY_BDD1_error = 0;
+    Ext_SARD_Set.READ_MEMORY_BDD2_error = 0;
+    SARD_Set.read_mem_error1 = 0;
+    SARD_Set.read_mem_error2 = 0;
+    SARD_Set.SPEED_PRESS_ERROR = 0;
+    SARD_Set.ERROR_BUK1 = 0;
+    SARD_Set.ERROR_CH1BUK1 = 0;
+    SARD_Set.ERROR_VK1 = 0;
+    SARD_Set.ERROR_VK2 = 0;
+    SARD_Set.ERROR_CH2BUK1 = 0;
+    SARD_Set.ERROR_BUK2 = 0;
+    SARD_Set.ERROR_CH1BUK2 = 0;
+    SARD_Set.ERROR_CH2BUK2 = 0;
+    Ext_SARD_Set.type_used_barcorr_mvv1 = 1;
+    Ext_SARD_Set.type_used_barcorr_mvv2 = 1;
+    SARD_Set.ruch_height_aerodrom = 0;
+    Ext_SARD_Set.RUCH_PULT_height_aerodrom = 6600;
+    switch_counter = 0;
+}
+void GetExtInfo()
+{//подхватываем ТОЛЬКО дискретную информацию
+    if ((UART1Error == 1) && (UART2Error == 1))
+    {//uart's dead
+        if (!((SARD_Set.error_CAN1) && (SARD_Set.error_CAN2)))
+        {//хоть одна межканальная линия должна быть жива!
+            SARD_Set.read_mem_error2 = !CanIn_Another_CHNL->frame3_2_AK_all.bitset.memory_test_succesfull;
+            if (((SARD_Set.ErrorDiscreteA429) && (SARD_Set.ErrorDiscreteA429_2)) || ((SARD_Set.ErrorCPIOM_A) && (SARD_Set.ErrorCPIOM_C)))
+            {
+                if ((!CanIn_Another_CHNL->frame8_2_IPO_command_list.bitset.command_commutatorM1_OFF))//нет дискрета по А429
+                {
+                    SYSTEM_STRUCT.MPC_ON = 1;
+                    SARD_Set.csWOW = CanIn_Another_CHNL->frame8_2_IPO_command_list.bitset.command_tech_regim_RUN;
+                    SARD_Set.csDOORS = CanIn_Another_CHNL->frame8_2_IPO_command_list.bitset.command_FAULT_LMP;
+                    SARD_Set.mvv1_rud_state = CanIn_Another_CHNL->frame8_2_IPO_command_list.bitset.command_commutatorM2_OFF;
+                    if (CanIn_Another_CHNL->frame8_2_IPO_command_list.bitset.command_MEMORY_TEST_RUN)
+                        Ext_SARD_Set.type_used_barcorr_mvv1 = 1;
+                    else
+                        if (CanIn_Another_CHNL->frame8_2_IPO_command_list.bitset.command_MEANDR_MOTOR_M1_OFF)
+                            Ext_SARD_Set.type_used_barcorr_mvv1 = 2;
+                        else
+                            if (CanIn_Another_CHNL->frame8_2_IPO_command_list.bitset.command_MEANDR_PMIN_OFF)
+                                Ext_SARD_Set.type_used_barcorr_mvv1 = 3;
+                            else
+                                Ext_SARD_Set.type_used_barcorr_mvv1 = 0;
+                }
+                else
+                {
+                    SYSTEM_STRUCT.MPC_ON = 0;
+                }
+            }
+            else
+            {
+                SYSTEM_STRUCT.MPC_ON = 0;
+            }
+            //        if(((SARD_Set.ErrorSIVSP)&&(SARD_Set.ErrorSIVSP_2))||((SARD_Set.ErrorCPIOM_A)&&(SARD_Set.ErrorCPIOM_C)))  
+            //        {
+            //                if((!CanIn_Another_CHNL->frame8_2_IPO_command_list.bitset.priority_command))
+            //                {
+            //                  SYSTEM_STRUCT.SVS_ON=1;
+            //                  Ext_SARD_Set.Habs=CanIn_Another_CHNL->frame9_1_params.bitset.frame9_1_Habs;
+            //                  Ext_SARD_Set.SVS2V_up=CanIn_Another_CHNL->frame9_1_params.bitset.frame9_1_Speed_vert;
+            //                  Ext_SARD_Set.SVS2QNH=CanIn_Another_CHNL->frame10_1_modul_barrcorr;
+            //                }
+            //                  else
+            //                  {
+            //                  SYSTEM_STRUCT.SVS_ON=0;
+            //                  }
+            //        }
+            //        else
+            //        {
+            //        SYSTEM_STRUCT.SVS_ON=0;
+            //        }
+            //        if(((SARD_Set.ErrorFMSA429)&&(SARD_Set.ErrorFMSA429_2))||((SARD_Set.ErrorCPIOM_A)&&(SARD_Set.ErrorCPIOM_C)))
+            //        {
+            //        if((!CanIn_Another_CHNL->frame8_2_IPO_command_list.bitset.command_EMS_regim_start))
+            //        {
+            //        SYSTEM_STRUCT.VSS_ON=1;
+            //        Ext_SARD_Set.BCC1H_aer=CanIn_Another_CHNL->frame9_2_H_aer_off.f;
+            //        Ext_SARD_Set.BCC1H_ech=CanIn_Another_CHNL->frame10_2_height_echelon.f;
+            //        Ext_SARD_Set.BCC1Time=CanIn_Another_CHNL->frame8_1_IPO_NUM_resurs_need;
+            //        }
+            //        else
+            //        {
+            //        SYSTEM_STRUCT.VSS_ON=0;
+            //        }
+            //        }
+            //        else
+            //        {
+            //        SYSTEM_STRUCT.VSS_ON=0;
+            //        }        
+        }
+    }
     else
-        Ext_SARD_Set.type_used_barcorr_mvv1 = 0; //exit
+    {//юарты живы!!
+        SARD_Set.read_mem_error2 = PackIn.p6_cmd1.bitset.error_memory;
+        if (((SARD_Set.ErrorDiscreteA429) && (SARD_Set.ErrorDiscreteA429_2)) || ((SARD_Set.ErrorCPIOM_A) && (SARD_Set.ErrorCPIOM_C)))
+        {
+            if ((PackIn.p5_cmd1.bitset.error_discrete_inform != 1) && ((PackIn.p5_cmd2.bitset.error_CPIOM_C != 1) || (PackIn.p5_cmd1.bitset.error_CPIOM_A != 1)))
+            {
+                SYSTEM_STRUCT.MPC_ON = 1;
+                SARD_Set.csWOW = (((PackIn.p3_cmd1.bitset.shassi_ON) && (!PackIn.p3_cmd2.bitset.shassi_OFF)));
+                SARD_Set.csDOORS = (((PackIn.p3_cmd2.bitset.doors_bag_closed) && (PackIn.p3_cmd2.bitset.doors_pas_closed)));
+                SARD_Set.mvv1_rud_state = PackIn.p6_cmd3.bitset.alpha_RUD;
+                Ext_SARD_Set.type_used_barcorr_mvv1 = PackIn.p3_cmd2.bitset.type_barcorr_used;
+            }
+            else
+                SYSTEM_STRUCT.MPC_ON = 0;
+        }
+        else
+        {
+            SYSTEM_STRUCT.MPC_ON = 0;
+        }
+        //                if(((SARD_Set.ErrorSIVSP)&&(SARD_Set.ErrorSIVSP_2))||((SARD_Set.ErrorCPIOM_A)&&(SARD_Set.ErrorCPIOM_C)))  
+        //                {
+        //                  if((PackIn.p5_cmd1.bitset.error_SIVSP!=1)&&((PackIn.p5_cmd2.bitset.error_CPIOM_C!=1)||(PackIn.p5_cmd1.bitset.error_CPIOM_A!=1)))
+        //                  {
+        //                SYSTEM_STRUCT.SVS_ON=1;  
+        //                Ext_SARD_Set.Habs=(int16_t)PackIn.p3_Height_alt.f;
+        //                Ext_SARD_Set.SVS2V_up=(int16_t)PackIn.p4_Vertical_speed.f;                
+        //                Ext_SARD_Set.SVS2QNH=PackIn.p4_bar_correction.c;                     
+        //                  }
+        //                  else
+        //                    SYSTEM_STRUCT.SVS_ON=0;
+        //                }
+        //                else
+        //                {
+        //                SYSTEM_STRUCT.SVS_ON=0;
+        //                }
+        //                if(((SARD_Set.ErrorFMSA429)&&(SARD_Set.ErrorFMSA429_2))||((SARD_Set.ErrorCPIOM_A)&&(SARD_Set.ErrorCPIOM_C)))
+        //                {
+        //                  if((PackIn.p5_cmd1.bitset.error_FMS!=1)&&((PackIn.p5_cmd2.bitset.error_CPIOM_C!=1)||(PackIn.p5_cmd1.bitset.error_CPIOM_A!=1)))
+        //                  {
+        //                  SYSTEM_STRUCT.VSS_ON=1;
+        //                  Ext_SARD_Set.BCC1H_aer=(float)PackIn.p5_aerodrom_out.c;                  
+        //                  Ext_SARD_Set.BCC1H_ech=(float)PackIn.p6_echelon.c;                  
+        //                  Ext_SARD_Set.BCC1Time=(float)PackIn.p5_time_to_ground.c;                  
+        //                  }
+        //                  else
+        //                SYSTEM_STRUCT.VSS_ON=0;
+        //                }
+        //                else
+        //                {
+        //                SYSTEM_STRUCT.VSS_ON=0;
+        //                }
+
+    }
+    if (SYSTEM_STRUCT.MPC_ON)
+    {
+        SARD_Set.mvv2_rud_state = SARD_Set.mvv1_rud_state;
+        Ext_SARD_Set.type_used_barcorr_mvv2 = Ext_SARD_Set.type_used_barcorr_mvv1;
+    }
+    //if(SYSTEM_STRUCT.SVS_ON)
+    //{
+    //Ext_SARD_Set.SVS1V_up=Ext_SARD_Set.SVS2V_up;
+    //Ext_SARD_Set.SVS1QNH=Ext_SARD_Set.SVS2QNH; 
+    //}
+    //if(SYSTEM_STRUCT.VSS_ON)
+    //{
+    //Ext_SARD_Set.BCC2Time=Ext_SARD_Set.BCC1Time;
+    //Ext_SARD_Set.BCC2H_ech=Ext_SARD_Set.BCC1H_ech;
+    //Ext_SARD_Set.BCC2H_aer=Ext_SARD_Set.BCC1H_aer;
+    //}
+    /////////////////////////////////////////////////////
+    SysPrior_ANOTHER_AK();
+    switch (SysPriorMPC())
+    {
+    case 1:
+        switch (Ext_SARD_Set.type_used_barcorr_mvv1)
+        {
+        case 1://QNE
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEMORY_TEST_RUN = 1;//QNE
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEANDR_MOTOR_M1_OFF = 0;//QNH
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEANDR_PMIN_OFF = 0;//QFE
+            break;
+        case 2://QNH
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEMORY_TEST_RUN = 0;//QNE
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEANDR_MOTOR_M1_OFF = 1;//QNH
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEANDR_PMIN_OFF = 0;//QFE
+            break;
+        case 3://QFE
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEMORY_TEST_RUN = 0;//QNE
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEANDR_MOTOR_M1_OFF = 0;//QNH
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEANDR_PMIN_OFF = 1;//QFE
+            break;
+        }
+        break;
+    case 2:
+        switch (Ext_SARD_Set.type_used_barcorr_mvv2)
+        {
+        case 1://QNE
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEMORY_TEST_RUN = 1;//QNE
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEANDR_MOTOR_M1_OFF = 0;//QNH
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEANDR_PMIN_OFF = 0;//QFE
+            break;
+        case 2://QNH
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEMORY_TEST_RUN = 0;//QNE
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEANDR_MOTOR_M1_OFF = 1;//QNH
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEANDR_PMIN_OFF = 0;//QFE
+            break;
+        case 3://QFE
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEMORY_TEST_RUN = 0;//QNE
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEANDR_MOTOR_M1_OFF = 0;//QNH
+            CanOut.frame8_2_IPO_command_list.bitset.command_MEANDR_PMIN_OFF = 1;//QFE
+            break;
+        }
+        break;
+    }
+
+    switch (SysPriorVSS())
+    {
+    case 1:
+        CanOut.frame8_1_IPO_NUM_resurs_need = (uint32_t)(Ext_SARD_Set.BCC1Time);
+        CanOut.frame9_2_H_aer_off.f = Ext_SARD_Set.BCC1H_aer;
+        CanOut.frame10_2_height_echelon.f = Ext_SARD_Set.BCC1H_ech;
+        break;
+    case 2:
+        CanOut.frame8_1_IPO_NUM_resurs_need = (uint32_t)(Ext_SARD_Set.BCC2Time);
+        CanOut.frame9_2_H_aer_off.f = Ext_SARD_Set.BCC2H_aer;
+        CanOut.frame10_2_height_echelon.f = Ext_SARD_Set.BCC2H_ech;
+        break;
+    default:
+        CanOut.frame8_1_IPO_NUM_resurs_need = 0;
+        CanOut.frame9_2_H_aer_off.f = ((Ext_SARD_Set.Haer_fly_end) / 0.3048);
+        CanOut.frame10_2_height_echelon.f = 0;
+        break;
+    }
+    CanOut.frame9_1_params.bitset.frame9_1_Habs = (int16_t)Ext_SARD_Set.Habs;
+    switch (SysPriorSVS())
+    {
+    case 1:
+        CanOut.frame10_1_modul_barrcorr = (uint32_t)Ext_SARD_Set.SVS1QNH;
+        CanOut.frame9_1_params.bitset.frame9_1_Speed_vert = (int16_t)Ext_SARD_Set.SVS1V_up;
+        break;
+    case 2:
+        CanOut.frame10_1_modul_barrcorr = (uint32_t)Ext_SARD_Set.SVS2QNH;
+        CanOut.frame9_1_params.bitset.frame9_1_Speed_vert = (int16_t)Ext_SARD_Set.SVS2V_up;
+        break;
+    }
+}
