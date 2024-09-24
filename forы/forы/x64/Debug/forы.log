@@ -1,0 +1,4 @@
+﻿  forы.cpp
+C:\Users\antyukovaa\source\repos\forы\forы.cpp(30,13): warning C4101: schetchick: неиспользованная локальная переменная
+C:\Users\antyukovaa\source\repos\forы\forы.cpp(29,16): warning C4101: res: неиспользованная локальная переменная
+  forы.vcxproj -> C:\Users\antyukovaa\source\repos\forы\x64\Debug\forы.exe
