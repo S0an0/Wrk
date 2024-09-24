@@ -16,12 +16,10 @@ public:
     string line_create_file;
     ifstream* read_file;
     ofstream *create_file;
-<<<<<<< HEAD
     string temp;
     Create_for(ifstream* read_f, ofstream* create_f) : read_file(read_f), create_file(create_f) {};
     
     /*bool is_openn()
-=======
     string temp[10000];
     Create_for(ifstream *read_f, ofstream *create_f) 
     {
@@ -29,7 +27,6 @@ public:
         create_file = create_f;
     };
     bool is_openn()
->>>>>>> 0948b56a188758fb90c9da5d073a643471cedef8
     {
         if (read_file->is_open() && create_file->is_open())
         {
@@ -44,7 +41,6 @@ public:
     };*/
     void create_forchik()
     {
-<<<<<<< HEAD
         if (read_file->is_open() && create_file->is_open())
         {
             while (read_file)
@@ -102,16 +98,11 @@ public:
                     if(temp[i+2]=="()")
                 }*/
                 /*if (temp[i] == "if")
->>>>>>> 0948b56a188758fb90c9da5d073a643471cedef8
                 {
                     cout << "if" << endl;
                     *create_file << n1 << char(number_cicle) << n2 << char(number_cicle) << n3 << char(number_cicle) << n4;
                 }*/
-<<<<<<< HEAD
                 if (temp == "//exit")
-=======
-                if (temp[i] == "//exit")
->>>>>>> 0948b56a188758fb90c9da5d073a643471cedef8
                     break;
             }
             cout << "tip vse normas" << endl;
@@ -128,12 +119,10 @@ int main()
     ifstream n1("123.txt");
     ofstream n2("create_for.txt");
     Create_for h(&n1, &n2);
-<<<<<<< HEAD
-    h.create_forchik();
-     
-=======
-    //h.create_forchik();
-    cout << endl;
+        h.create_forchik();
+
+        //h.create_forchik();
+        cout << endl;
     string f;
     while (n1)
     {
@@ -143,46 +132,45 @@ int main()
     }
     //for (auto d : f)
        // cout << f;
->>>>>>> 0948b56a188758fb90c9da5d073a643471cedef8
-    //string symbol;
-    ////char symbol[100];
-    //int f = 65;  //do 90
-    //ifstream out("123.txt"/*, ios_base::in*/); //"in"-for read
-    //ofstream create("created_for.txt"/*, ios_base::out*/); //"out"-for read
-    //int temp=0;
-    ////string cicle_for=<<char(f)<< = 0; i < length; i++)"
-    //    /*for (int i = 0; i < length; i++)
-    //    {
+        //string symbol;
+        ////char symbol[100];
+        //int f = 65;  //do 90
+        //ifstream out("123.txt"/*, ios_base::in*/); //"in"-for read
+        //ofstream create("created_for.txt"/*, ios_base::out*/); //"out"-for read
+        //int temp=0;
+        ////string cicle_for=<<char(f)<< = 0; i < length; i++)"
+        //    /*for (int i = 0; i < length; i++)
+        //    {
 
-    //    }*/
-    //if (out.is_open()&& create.is_open())
-    //{
-    //    cout << "All good , work next )" << endl;
-    //    //fin >> buff; // считали первое слово из файла
-    //    //cout << buff << endl; // напечатали это слово
-    //    //
-    //    while (out)
-    //    {
-    //        out >> symbol;
-    //        if(symbol=="if")
-    //        {
-    //            cout << symbol << endl;
-    //            
-    //        }
-    //    }
+        //    }*/
+        //if (out.is_open()&& create.is_open())
+        //{
+        //    cout << "All good , work next )" << endl;
+        //    //fin >> buff; // считали первое слово из файла
+        //    //cout << buff << endl; // напечатали это слово
+        //    //
+        //    while (out)
+        //    {
+        //        out >> symbol;
+        //        if(symbol=="if")
+        //        {
+        //            cout << symbol << endl;
+        //            
+        //        }
+        //    }
 
-    //    //while (out)
-    //    //{
-    //    //    out.getline(symbol, 100); // считали строку из файла
-    //    //    if (out ==)
+        //    //while (out)
+        //    //{
+        //    //    out.getline(symbol, 100); // считали строку из файла
+        //    //    if (out ==)
 
-    //    //    cout << symbol << endl; // напечатали эту строку
-    //    //}
-    //}
-    //else
-    //{
-    //    cout << "Error file is not open" << endl;
-    //}
-    //
-    //out.close();
+        //    //    cout << symbol << endl; // напечатали эту строку
+        //    //}
+        //}
+        //else
+        //{
+        //    cout << "Error file is not open" << endl;
+        //}
+        //
+        //out.close();
 }
